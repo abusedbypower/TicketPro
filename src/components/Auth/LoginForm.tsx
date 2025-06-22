@@ -22,7 +22,18 @@ export function LoginForm({ onToggleMode }: LoginFormProps) {
     try {
       await signIn(email, password);
     } catch (error: any) {
-      setError(error.message);
+      // Extract user-friendly error message from Supabase error
+      let errorMessage = 'An error occurred during sign in';
+      
+      if (error?.message) {
+        errorMessage = error.message;
+      } else if (error?.error_description) {
+        errorMessage = error.error_description;
+      } else if (typeof error === 'string') {
+        errorMessage = error;
+      }
+      
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
